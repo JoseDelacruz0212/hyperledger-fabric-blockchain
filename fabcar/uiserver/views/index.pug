@@ -1,0 +1,14 @@
+doctype html
+html
+ head
+  title FABCAR
+  body
+   h1 First Page
+   a(href='/api/queryallcars')  View All Cars
+   br
+   a(href='/api/createcar')  Insert  a new car
+   br
+  form(method='GET' action='/api/query/:car_index')
+  label() car_index   
+    input(type='text', placeholder='car_index' name='car_index')
+    br
