@@ -59,7 +59,7 @@ app.get('/api/getAlltransactions', async function (req, res) {
                 const result = await contract.evaluateTransaction('queryAllCars');
                 console.log(JSON.parse(result));
                 console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
-                res.status(200).json({ response: result.toString() });
+                res.status(200).json({ response:JSON.parse(result.toString()) });
         } catch (error) {
                 console.error(`Failed to evaluate transaction: ${error}`);
                 res.status(500).json({ error: error });
@@ -96,7 +96,7 @@ app.get('/api/query/:user_id', async function (req, res) {
                 // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
                 const result = await contract.evaluateTransaction('queryCar', req.params.user_id);
                 console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
-                res.status(200).json({ response: result.toString() });
+                res.status(200).json({ response:JSON.parse(result.toString()) });
         } catch (error) {
                 console.error(`Failed to evaluate transaction: ${error}`);
                 res.status(500).json({ error: error });
