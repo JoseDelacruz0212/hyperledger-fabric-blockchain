@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 
 
 var app = express();
+app.use(cors());
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
 app.use(bodyParser.json());
 // Setting for Hyperledger Fabric
@@ -63,7 +64,7 @@ app.get('/api/getAlltransactions', async function (req, res) {
         } catch (error) {
                 console.error(`Failed to evaluate transaction: ${error}`);
                 res.status(500).json({ error: error });
-                process.exit(1);
+                
         }
 });
 app.get('/api/query/:user_id', async function (req, res) {
@@ -100,7 +101,7 @@ app.get('/api/query/:user_id', async function (req, res) {
         } catch (error) {
                 console.error(`Failed to evaluate transaction: ${error}`);
                 res.status(500).json({ error: error });
-                process.exit(1);
+                
         }
 });
 app.post('/api/addTransaction/', urlencodedParser, async function (req, res) {
@@ -141,7 +142,7 @@ app.post('/api/addTransaction/', urlencodedParser, async function (req, res) {
                 await gateway.disconnect();
         } catch (error) {
                 console.error(`Failed to submit transaction: ${error}`);
-                process.exit(1);
+                
         }
 })
 
@@ -184,7 +185,7 @@ app.put('/api/changeowner/:car_index', async function (req, res) {
                 await gateway.disconnect();
         } catch (error) {
                 console.error(`Failed to submit transaction: ${error}`);
-                process.exit(1);
+                
         }
 })
 
