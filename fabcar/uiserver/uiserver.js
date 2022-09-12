@@ -9,7 +9,6 @@ app.use(bodyParser.json());
 const { Gateway, Wallets } = require('fabric-network');
 const path = require('path');
 const fs = require('fs');
-const { response } = require('express');
 //const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
 //      const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 app.set("view engine", "pug");
@@ -60,7 +59,7 @@ app.get('/api/getAlltransactions', async function (req, res) {
                 const result = await contract.evaluateTransaction('queryAllCars');
                 console.log(JSON.parse(result));
                 console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
-                res.status(200).body(result);
+                res.status(200).json({ response: result.toString() });
         } catch (error) {
                 console.error(`Failed to evaluate transaction: ${error}`);
                 res.status(500).json({ error: error });
@@ -97,7 +96,7 @@ app.get('/api/query/:user_id', async function (req, res) {
                 // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
                 const result = await contract.evaluateTransaction('queryCar', req.params.user_id);
                 console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
-                res.status(200).body(result);
+                res.status(200).json({ response: result.toString() });
         } catch (error) {
                 console.error(`Failed to evaluate transaction: ${error}`);
                 res.status(500).json({ error: error });
