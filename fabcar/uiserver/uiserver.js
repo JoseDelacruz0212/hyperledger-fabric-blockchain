@@ -27,8 +27,6 @@ app.get('/api/createcar', function (req, res) {
 
 });
 
-
-
 app.get('/api/getAlltransactions', async function (req, res) {
         try {
                 const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
@@ -105,7 +103,6 @@ app.get('/api/query/:user_id', async function (req, res) {
                 
         }
 });
-
 app.get('/api/history/:user_id', async function (req, res) {
         try {
                 const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
@@ -134,7 +131,7 @@ app.get('/api/history/:user_id', async function (req, res) {
                 // Evaluate the specified transaction.
                 // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
                 // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
-                const result = await contract.evaluateTransaction('getHistoryForTransaction', req.params.user_id);
+                const result = await contract.evaluateTransaction('retrieveHistory', req.params.user_id);
                 console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
                 res.status(200).json({ response:JSON.parse(result.toString()) });
         } catch (error) {
@@ -143,9 +140,6 @@ app.get('/api/history/:user_id', async function (req, res) {
                 
         }
 });
-
-
-
 app.post('/api/addTransaction/', urlencodedParser, async function (req, res) {
         try {
 

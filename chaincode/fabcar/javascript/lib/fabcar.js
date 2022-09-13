@@ -12,9 +12,7 @@ class FabCar extends Contract {
 
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
-        const cars = [
-           
-        ];
+        const cars = [];
 
         for (let i = 0; i < cars.length; i++) {
             cars[i].docType = 'car';
@@ -52,7 +50,7 @@ class FabCar extends Contract {
         const startKey = '';
         const endKey = '';
         const allResults = [];
-        for await (const {key, value} of ctx.stub.getStateByRange(startKey, endKey)) {
+        for await (const { key, value } of ctx.stub.getStateByRange(startKey, endKey)) {
             const strValue = Buffer.from(value).toString('utf8');
             let record;
             try {
@@ -80,6 +78,23 @@ class FabCar extends Contract {
         await ctx.stub.putState(carNumber, Buffer.from(JSON.stringify(car)));
         console.info('============= END : changeCarOwner ===========');
     }
+    async retrieveHistory(ctx, key) {
+        console.info('getting history for key: ' + key);
+        let iterator = await ctx.stub.getHistoryForKey(key);
+        let result = [];
+        let res = await iterator.next();
+        while (!res.done) {
+            if (res.value) {
+                console.info(`found state update with value: ${res.value.value.toString('utf8')}`);
+                const obj = JSON.parse(res.value.value.toString('utf8'));
+                result.push(obj);
+            }
+            res = await iterator.next();
+        }
+        await iterator.close();
+        return result;
+    }
+
 
 }
 
