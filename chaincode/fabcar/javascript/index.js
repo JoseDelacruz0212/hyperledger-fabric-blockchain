@@ -6,7 +6,7 @@
 
 'use strict';
 
-const FabCar = require('./lib/fabcar');
+const EduChain = require('./lib/educhain');
 
-module.exports.FabCar = FabCar;
-module.exports.contracts = [ FabCar ];
+module.exports.EduChain = EduChain;
+module.exports.contracts = [ EduChain ];

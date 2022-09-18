@@ -1,10 +1,9 @@
 var express = require('express');
-const cors=require('cors');
 var bodyParser = require('body-parser');
 
 
 var app = express();
-app.use(cors());
+
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
 app.use(bodyParser.json());
 // Setting for Hyperledger Fabric
@@ -15,17 +14,6 @@ const fs = require('fs');
 //      const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 app.set("view engine", "pug");
 
-app.get('/api/', function (req, res) {
-
-        res.render('index');
-
-});
-
-app.get('/api/createcar', function (req, res) {
-
-        res.render('createcar');
-
-});
 
 app.get('/api/getAlltransactions', async function (req, res) {
         try {
@@ -51,19 +39,17 @@ app.get('/api/getAlltransactions', async function (req, res) {
                 const network = await gateway.getNetwork('mychannel');
 
                 // Get the contract from the network.
-                const contract = network.getContract('fabcar');
+                const contract = network.getContract('EduChain');
 
                 // Evaluate the specified transaction.
-                // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
-                // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
-                const result = await contract.evaluateTransaction('queryAllCars');
+                const result = await contract.evaluateTransaction('queryAllTransactions');
                 console.log(JSON.parse(result));
                 console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
-                res.status(200).json({ response:JSON.parse(result.toString()) });
+                res.status(200).json({ response: JSON.parse(result.toString()) });
         } catch (error) {
                 console.error(`Failed to evaluate transaction: ${error}`);
                 res.status(500).json({ error: error });
-                
+
         }
 });
 app.get('/api/query/:user_id', async function (req, res) {
@@ -90,17 +76,15 @@ app.get('/api/query/:user_id', async function (req, res) {
                 const network = await gateway.getNetwork('mychannel');
 
                 // Get the contract from the network.
-                const contract = network.getContract('fabcar');
-                // Evaluate the specified transaction.
-                // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
-                // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
+                const contract = network.getContract('EduChain');
+               
                 const result = await contract.evaluateTransaction('queryCar', req.params.user_id);
                 console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
-                res.status(200).json({ response:JSON.parse(result.toString()) });
+                res.status(200).json({ response: JSON.parse(result.toString()) });
         } catch (error) {
                 console.error(`Failed to evaluate transaction: ${error}`);
                 res.status(500).json({ error: error });
-                
+
         }
 });
 app.get('/api/history/:user_id', async function (req, res) {
@@ -127,17 +111,17 @@ app.get('/api/history/:user_id', async function (req, res) {
                 const network = await gateway.getNetwork('mychannel');
 
                 // Get the contract from the network.
-                const contract = network.getContract('fabcar');
+                const contract = network.getContract('EduChain');
                 // Evaluate the specified transaction.
                 // queryCar transaction - requires 1 argument, ex: ('queryCar', 'CAR4')
                 // queryAllCars transaction - requires no arguments, ex: ('queryAllCars')
                 const result = await contract.evaluateTransaction('retrieveHistory', req.params.user_id);
                 console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
-                res.status(200).json({ response:JSON.parse(result.toString()) });
+                res.status(200).json({ response: JSON.parse(result.toString()) });
         } catch (error) {
                 console.error(`Failed to evaluate transaction: ${error}`);
                 res.status(500).json({ error: error });
-                
+
         }
 });
 app.post('/api/addTransaction/', urlencodedParser, async function (req, res) {
@@ -165,28 +149,23 @@ app.post('/api/addTransaction/', urlencodedParser, async function (req, res) {
                 const network = await gateway.getNetwork('mychannel');
 
                 // Get the contract from the network.
-                const contract = network.getContract('fabcar');
+                const contract = network.getContract('EduChain');
                 // Submit the specified transaction.
                 // createCar transaction - requires 5 argument, ex: ('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom')
                 // changeCarOwner transaction - requires 2 args , ex: ('changeCarOwner', 'CAR10', 'Dave')
 
-                await contract.submitTransaction('createCar', req.body.carid, req.body.make, req.body.model, req.body.colour, req.body.owner);
+                await contract.submitTransaction('createTransaction', req.body.userId, req.body.courseName, req.body.courseId, req.body.evaluationName, req.body.evaluationId,req.body.time,req.body.points,req.body.grade,req.body.section);
 
-                console.log('Transaction has been submitted');
-                res.send('Transaction has been submitted');
+                console.log('Transacción insertada correctamente en la red blockchain');
+                res.send('Transacción insertada correctamente en la red blockchain');
                 // Disconnect from the gateway.
                 await gateway.disconnect();
         } catch (error) {
-                console.error(`Failed to submit transaction: ${error}`);
-                
+                console.error(`falló en realizar la transacción`);
+
         }
 })
-
-
-
-
-
-app.put('/api/changeowner/:car_index', async function (req, res) {
+app.put('/api/changePoints/', async function (req, res) {
         try {
                 const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
                 const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
@@ -210,19 +189,16 @@ app.put('/api/changeowner/:car_index', async function (req, res) {
                 const network = await gateway.getNetwork('mychannel');
 
                 // Get the contract from the network.
-                const contract = network.getContract('fabcar');
-                // Submit the specified transaction.
-                // createCar transaction - requires 5 argument, ex: ('createCar', 'CAR12', 'Honda', 'Accord', 'Black', 'Tom')
-                // changeCarOwner transaction - requires 2 args , ex: ('changeCarOwner', 'CAR10', 'Dave')
-                await contract.submitTransaction('chafngeCarOwner', req.params.car_index, req.body.owner);
-                console.log('Transaction has been submitted');
-                res.send('Transaction has been submitted');
+                const contract = network.getContract('EduChain');
+                await contract.submitTransaction('changeUserPoints', req.body.userId, req.body.points);
+                console.log('Se modifico la nota correctamente en una nueva transacción');
+                res.send('Se modifico la nota correctamente en una nueva transacción');
                 // Disconnect from the gateway.
                 await gateway.disconnect();
         } catch (error) {
-                console.error(`Failed to submit transaction: ${error}`);
-                
+                console.error(error);
+
         }
 })
 
-app.listen(8080);
+app.listen(8081);
