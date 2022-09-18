@@ -1,9 +1,9 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-
+const cors=require('cors');
 
 var app = express();
-
+app.use(cors());
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
 app.use(bodyParser.json());
 // Setting for Hyperledger Fabric
